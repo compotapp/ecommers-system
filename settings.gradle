@@ -1,0 +1,16 @@
+//pluginManagement {
+//    repositories {
+//        maven { url 'https://repo.spring.io/milestone' }
+//        maven { url 'https://repo.spring.io/snapshot' }
+//        gradlePluginPortal()
+//    }
+//}
+//rootProject.name = 'ecommers-system'
+
+rootProject.name = 'ecommers-system'
+include 'user-service'
+include 'order-service'
+include 'inventory-service'
+include 'delivery-service'
+include 'notification-service'
+include 'common-library'
