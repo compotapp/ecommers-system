@@ -5,9 +5,20 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/mydatabase
+    url: jdbc:postgresql://localhost:5432/mydb
     username: postgres
     password: postgres
   jpa:
     hibernate:
       ddl-auto: update
+  security:
+    secret-key: you_secret_key
+
+  profiles:
+    active: dev
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG

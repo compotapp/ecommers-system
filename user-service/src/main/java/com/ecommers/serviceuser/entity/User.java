@@ -1,8 +1,16 @@
 package com.ecommers.serviceuser.entity;
 
+import com.ecommers.serviceuser.role.RoleType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "users")
@@ -23,9 +31,11 @@ public class User {
     @NotBlank
     private String password;
 
-    public User() {
+    @JsonIgnore
+    @OneToMany(fetch = LAZY, mappedBy = "user", cascade = PERSIST)
+    private List<UserRole> roles = new ArrayList<>();
 
-    }
+    public User() {}
 
     public User(String name, String email, String password) {
         this.name = name;
@@ -39,6 +49,8 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+
 
     public Long getId() {
         return id;
@@ -70,5 +82,20 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<UserRole> communityRoles) {
+        this.roles = communityRoles;
+    }
+
+    public void addRole(RoleType roleType) {
+        var role = new UserRole();
+        role.setType(roleType);
+        role.setUser(this);
+        roles.add(role);
     }
 }
