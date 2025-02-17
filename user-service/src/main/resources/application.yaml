@@ -11,3 +11,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  security:
+    secret-key: you_secret_key

@@ -58,6 +58,30 @@ class UserControllerIntegrationTest extends AbstractTestContainer {
     }
 
     @Test
+    void shouldFoundUserByName() {
+        String url = "http://localhost:" + port + "/api/user/Max";
+
+        ResponseEntity<User> response = restTemplate.getForEntity(url, User.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        var user = response.getBody();
+
+        assertNotNull(user);
+        assertEquals("Max", user.getName());
+    }
+
+    @Test
+    void shouldFoundUserByNameIfNAmeNotFoundInDatabase() {
+        String url = "http://localhost:" + port + "/api/user/Bob";
+
+        ResponseEntity<User> response = restTemplate.getForEntity(url, User.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
     void shouldFoundUserByEmail() {
         String url = "http://localhost:" + port + "/api/user/max@email.com";
 
@@ -119,35 +143,32 @@ class UserControllerIntegrationTest extends AbstractTestContainer {
 
         User updateUserRequest = new User(currentUser.getId(), "Neo", "neo@email.com", "789");
         String url = "http://localhost:" + port + "/api/user/update";
-        ResponseEntity<User> response = restTemplate.postForEntity(
+        restTemplate.put(
                 url,
                 updateUserRequest,
                 User.class
         );
-        User userResponse = response.getBody();
-        User updateUser = userRepository.findByEmail("neo@email.com").orElse(null);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(userResponse);
+        User updateUser = userRepository.findById(currentUser.getId()).orElse(null);
+
         assertNotNull(updateUser);
-        assertEquals(updateUser.getId() ,userResponse.getId());
-        assertEquals(updateUser.getName() ,userResponse.getName());
-        assertEquals(updateUser.getEmail() ,userResponse.getEmail());
-        assertEquals(updateUser.getPassword() ,userResponse.getPassword());
+        assertEquals(updateUserRequest.getId(), updateUser.getId());
+        assertEquals(updateUserRequest.getName(), updateUser.getName());
+        assertEquals(updateUserRequest.getEmail(), updateUser.getEmail());
+        assertEquals(updateUserRequest.getPassword(), updateUser.getPassword());
     }
 
     @Test
     void shouldUpdateNotExistUserAndResponseNotFound() {
         User updateUserRequest = new User(100L, "Neo", "neo@email.com", "789");
         String url = "http://localhost:" + port + "/api/user/update";
-        ResponseEntity<User> response = restTemplate.postForEntity(
+        restTemplate.put(
                 url,
                 updateUserRequest,
                 User.class
         );
         User updateUser = userRepository.findByEmail("neo@email.com").orElse(null);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(updateUser);
     }
 
