@@ -11,7 +11,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AbstractTestContainer {
 
@@ -23,6 +22,7 @@ public abstract class AbstractTestContainer {
 
     @BeforeAll
     static void startContainer() {
+        System.out.println("new instance");
         POSTGRESQL_CONTAINER.start();
     }
 

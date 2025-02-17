@@ -28,7 +28,14 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/update")
+    @GetMapping("/{name}")
+    public ResponseEntity<User> getUserByName(@PathVariable String name) {
+        return userService.findByName(name)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/update")
     public ResponseEntity<User> updateUser(@Validated @RequestBody User user) {
         return userService.updateUser(user)
                 .map(ResponseEntity::ok)
